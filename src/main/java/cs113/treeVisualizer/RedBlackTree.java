@@ -115,27 +115,44 @@ public class RedBlackTree<E extends Comparable<E>> {
         if(grandParent == null) {
             node.color = Color.BLACK;
         }
+        //establish pibling
         Node<E> uncle = parent.isLeftChild() ? grandParent.right : grandParent.left;
 
+        //parent and pibling are red
         if(uncle != NIL && uncle.color == Color.RED) {
             parent.color = Color.BLACK;
             uncle.color = Color.BLACK;
             grandParent.color = Color.RED;
             fixInsert(grandParent);
+            return;
         }
 
-        if(parent.color == Color.RED && uncle.color == Color.BLACK && uncle != NIL) {
-            leftRotate(grandParent);
-            parent.color = Color.BLACK;
-            uncle.color = Color.BLACK;
-            grandParent.color = Color.RED;
-            fixInsert(grandParent);
-
+        //parent is red and pibling is black
+        if(parent.color == Color.RED && (uncle.color == Color.BLACK || uncle == NIL)) {
+            //left-left linear needs right rotate
+            if(parent.isLeftChild() && node.isLeftChild()) {
+                rightRotate(grandParent);
+                parent.color = Color.BLACK;
+                grandParent.color = Color.RED;
+            //right-right needs left rotate
+            }else if(!parent.isLeftChild() && !node.isLeftChild()){
+                leftRotate(grandParent);
+                parent.color = Color.BLACK;
+                grandParent.color = Color.RED;
+            //zaggy right-left
+            }else if(!parent.isLeftChild() && node.isLeftChild()) {
+                rightRotate(parent);
+                leftRotate(grandParent);
+                node.color = Color.BLACK;
+                grandParent.color = Color.RED;
+            //zaggy left-right
+            }else if(parent.isLeftChild() && !node.isLeftChild()) {
+                leftRotate(parent);
+                rightRotate(grandParent);
+                node.color = Color.BLACK;
+                grandParent.color = Color.RED;
+            }
         }
-
-
-
-
     }
 
     private void leftRotate(Node<E> x) {
