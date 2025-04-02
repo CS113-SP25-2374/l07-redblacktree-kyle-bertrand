@@ -151,6 +151,7 @@ public class RedBlackTree<E extends Comparable<E>> {
                 rightRotate(grandParent);
                 node.color = Color.BLACK;
                 grandParent.color = Color.RED;
+
             }
         }
     }
